@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: supabase_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: supabase_secret_password
+      POSTGRES_DB: postgres
+    ports:
+    # Troquei o lado esquerdo de 5432 para 5433 (porta do host)
+      - "5433:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks:
+      - jungle_network
+
+  web:
+    build:
+      context: ./app
+      dockerfile: Dockerfile
+    container_name: jungle_web
+    restart: always
+    command: >
+      sh -c "python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - ./app:/app
+    ports:
+      - "8000:8000"
+    environment:
+      - DB_NAME=postgres
+      - DB_USER=postgres
+      - DB_PASSWORD=supabase_secret_password
+      - DB_HOST=db
+      - DB_PORT=5432
+    depends_on:
+      - db
+    networks:
+      - jungle_network
+volumes:
+  pgdata:
+
+networks:
+  jungle_network:
+    driver: bridge
