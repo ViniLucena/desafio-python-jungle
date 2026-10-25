@@ -1,4 +1,4 @@
-# Desafio do Zé: Python + Supabase (Docker)
+# Python + Supabase (Docker)
 
 O objetivo do projeto é integrar uma aplicação web em Python (Django) com um banco de dados PostgreSQL (simulando o ambiente Supabase), com ambos os serviços rodando em contêineres Docker e se comunicando através de uma rede interna.
 
